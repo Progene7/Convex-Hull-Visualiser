@@ -1,0 +1,73 @@
+a {
+  color: #007bff; /* Link color */
+  text-decoration: none; /* Remove underline */
+  transition: color 1.5s; /* Smooth transition for color change */
+}
+
+/* Style for hyperlink hover */
+a:hover {
+  color: #9803fc; /* Change color on hover */
+}
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #8cbd9b;
+}
+.container {
+  max-width: 50%;
+  margin: 20px auto;
+  padding: 40px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  align-items: center;
+}
+h1,
+h2 {
+  color: rgb(6, 131, 6);
+  text-align: center;
+}
+p {
+  color: #282727;
+  line-height: 1.6;
+}
+a {
+  display: block;
+  margin-top: 10px;
+  color: #007bff;
+  text-decoration: none;
+  text-align: center;
+}
+a:hover {
+  text-decoration: underline;
+  color: #9803fc;
+}
+
+#speedSlider {
+  width: 100px;
+  margin-left: 10px;
+}
+
+.warning-message {
+  color: red;
+  font-weight: bold;
+}
+
+#canvas-container {
+  /* padding-top: px; */
+  margin-top: 40px;
+  margin-right: 300px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#messages {
+  margin-top: 20px;
+  padding: 10px;
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-family: Arial, sans-serif;
+}

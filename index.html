@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Convex Hull Algorithms</title>
+    <link rel="stylesheet" type="text/css" href="styles.css" />
+  </head>
+  <body>
+    <style>
+        body
+        {
+            font-family: "Times New Roman", Times, serif;
+        }
+        footer
+        {
+            font-family: "Times New Roman", Times, serif;
+        }
+      p {
+        font-family: "Times New Roman", Times, serif;
+        padding: 3%;
+      }
+      a {
+        color: #007bff; /* Link color */
+        text-decoration: none; /* Remove underline */
+        transition: color 1.5s; /* Smooth transition for color change */
+      }
+
+      /* Style for hyperlink hover */
+      a:hover {
+        color: #9803fc; /* Change color on hover */
+      }
+    </style>
+    <div class="container">
+      <h1>CONVEX HULL ALGORITHMS</h1>
+
+      <br />
+
+      <p
+        style="
+          background-color: rgba(211, 211, 211, 0.458);
+          font-family: 'Times New Roman', Times, serif;
+        "
+      >
+        In the realm of computational geometry, the Convex Hull algorithm stands
+        as a cornerstone, addressing the fundamental problem of efficiently
+        determining the smallest convex polygon enclosing a given set of points
+        in a two-dimensional or higher-dimensional space. This problem finds
+        wide-ranging applications across diverse fields such as computer
+        graphics, robotics, geographic information systems (GIS), and image
+        processing. Let’s dive into understanding two of the most important
+        algorithms for solving convex hulls namely, Jarvis March and KirkPatrick
+        Seidel Algorithm.
+        <br />
+      </p>
+
+      <br />
+
+      <br />
+
+      <h2>Kirkpatrick Seidel Algorithm</h2>
+
+      <p style="background-color: rgba(211, 211, 211, 0.458)">
+        The Kirkpatrick Seidel algorithm is a more advanced algorithm for
+        finding the convex hull in higher dimensions. It combines
+        divide-and-conquer with incremental methods to achieve a faster runtime.
+        The algorithm recursively divides the point set into subsets and
+        constructs convex layers for each subset, which are then merged to
+        obtain the convex hull.
+
+        <br /><br />
+
+        The time complexity of the Kirkpatrick Seidel algorithm is computed
+        based on the number of points in the input set and the number of points
+        in the resulting convex hull. Let's denote: n: The number of input
+        points. h: The number of points in the convex hull. The algorithm's time
+        complexity can be derived as follows: The divide-and-conquer step
+        involves recursively partitioning the input points, which takes O(n log
+        n) time. The merge step involves combining the convex layers of each
+        subset, which takes O(n) time. Overall, the time complexity is O(n log
+        h).
+        <a href="kps.html">Visualize Kirkpatrick Seidel Algorithm</a>
+
+        <a href="https://daa-a1-kps-docs.netlify.app/global"
+          >Documentation of Kirkpatrick Seidel Algorithm</a
+        >
+        <br />
+      </p>
+      <br />
+
+      <br />
+
+      <h2>Jarvis March Algorithm</h2>
+      <p style="background-color: rgba(211, 211, 211, 0.458)">
+        The Jarvis March algorithm, also known as the gift wrapping algorithm,
+        is a simple and intuitive method for finding the convex hull of a set of
+        points. It iteratively selects the point with the smallest polar angle
+        with respect to the current point and adds it to the convex hull. This
+        process continues until the starting point is reached again. The time
+        complexity of the Jarvis March algorithm is computed based on the number
+        of points in the input set and the number of points in the resulting
+        convex hull.
+        <br /><br />
+        Let's denote: n: The number of input points. h: The number of points in
+        the convex hull. The algorithm's time complexity can be derived as
+        follows: For each point in the convex hull, the algorithm iterates over
+        all the input points to find the next point in the hull. This results in
+        a time complexity of O(nh). In the worst-case scenario, every point in
+        the input set is part of the convex hull, i.e., h = n. Therefore, the
+        time complexity becomes O(n2).
+
+        <a href="jvm.html">Visualize Jarvis March Algorithm</a>
+
+        <a href="https://daa-a1-jvm-docs.netlify.app/global"
+          >Documentation of Jarvis March Algorithm</a
+        >
+        <br />
+      </p>
+
+      <br />
+
+      <h1>Reports</h1>
+
+      <a href="https://daa-a1-team-z1.netlify.app/"
+        >Documentation of Convex Hull Assignment</a
+      >
+
+      <br /><br />
+      <br />
+      <footer
+        style="text-align: center; background-color: lightgray; padding: 10px"
+      >
+        <h2>Team Members</h2>
+        <ul style="list-style: none; padding: 0">
+          <li style="background-color: lightgray; margin-bottom: 5px">
+            Vinay Jain - 2021A7PS0105H
+          </li>
+          <li style="background-color: lightgray; margin-bottom: 5px">
+            Darsh Shani - 2021A7PS2171H
+          </li>
+          <li style="background-color: lightgray; margin-bottom: 5px">
+            Parth Agarwal - 2021A7PS2081H
+          </li>
+          <li style="background-color: lightgray">
+            Sarthak Choudhary - 2021A7PS2599H
+          </li>
+        </ul>
+      </footer>
+    </div>
+  </body>
+</html>

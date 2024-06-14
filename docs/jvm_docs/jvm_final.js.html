@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>jvm_final.js - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <li class="nav-link nav-home-link"><a href="index.html">Home</a></li><li class="nav-heading"><a href="global.html">Globals</a></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#activateCursor">activateCursor</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#addPoint">addPoint</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#addRandomPoints">addRandomPoints</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#clearPoints">clearPoints</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#deactivateCursor">deactivateCursor</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#distance">distance</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#draw">draw</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#handleFileSelect">handleFileSelect</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#jarvisMarch">jarvisMarch</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#orientation">orientation</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#pointsInHull">pointsInHull</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#processData">processData</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#runAlgorithm">runAlgorithm</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#setup">setup</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#showConvexHull">showConvexHull</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#updatePointCount">updatePointCount</a></span></li>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">jvm_final.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Determines the orientation of three points: clockwise, counterclockwise, or collinear.
+ * @param {object} p1 - The first point object with properties x and y.
+ * @param {object} p2 - The second point object with properties x and y.
+ * @param {object} p3 - The third point object with properties x and y.
+ * @returns {number} Returns 1 if points are in clockwise orientation, -1 if counterclockwise, or 0 if collinear.
+ */
+function orientation(p1, p2, p3) {
+    let d = (p2.y - p1.y) * (p3.x - p2.x) - (p2.x - p1.x) * (p3.y - p2.y);
+    if (d === 0) return 0; // collinear
+    return (d > 0) ? 1 : -1; // clockwise or counterclockwise
+}
+
+/**
+ * Calculates the Euclidean distance between two points.
+ * @param {object} p1 - The first point object with properties x and y.
+ * @param {object} p2 - The second point object with properties x and y.
+ * @returns {number} The Euclidean distance between the two points.
+ */
+function distance(p1, p2) {
+    return Math.sqrt((p2.y - p1.y) ** 2 + (p2.x - p1.x) ** 2);
+}
+
+/**
+ * Implements the Jarvis March algorithm to find the convex hull of a set of points.
+ * @param {object[]} points - An array of point objects with properties x and y.
+ * @returns {object[]} An array containing the points forming the convex hull in counterclockwise order.
+ */
+function jarvisMarch(points) {
+    // Find the point with the lowest y-coordinate (or leftmost if there's a tie)
+    let onHull = points.reduce((min, p) => p.y &lt; min.y ? p : min);
+
+    // Initialize the convex hull array
+    let hull = [];
+
+    // Iterate to find the convex hull
+    while (true) {
+        hull.push(onHull);
+
+        let nextPoint = points[0];
+        for (let point of points) {
+            let o = orientation(onHull, nextPoint, point);
+            if (nextPoint === onHull || o === 1 || (o === 0 &amp;&amp; distance(onHull, point) > distance(onHull, nextPoint))) {
+                nextPoint = point;
+            }
+        }
+        onHull = nextPoint;
+        if (onHull === hull[0]) break;
+    }
+    return hull;
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a> on Thu Apr 04 2024 23:51:51 GMT+0530 (India Standard Time) using the Minami theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>

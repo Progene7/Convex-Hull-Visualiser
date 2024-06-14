@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>jvm.js - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <li class="nav-link nav-home-link"><a href="index.html">Home</a></li><li class="nav-heading"><a href="global.html">Globals</a></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#activateCursor">activateCursor</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#addPoint">addPoint</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#addRandomPoints">addRandomPoints</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#clearPoints">clearPoints</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#deactivateCursor">deactivateCursor</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#distance">distance</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#draw">draw</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#handleFileSelect">handleFileSelect</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#jarvisMarch">jarvisMarch</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#orientation">orientation</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#pointsInHull">pointsInHull</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#processData">processData</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#runAlgorithm">runAlgorithm</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#setup">setup</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#showConvexHull">showConvexHull</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#updatePointCount">updatePointCount</a></span></li>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">jvm.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>// Gift Wrapping Algorithm
+
+/**
+ * Gift Wrapping Algorithm for finding the convex hull of a set of points.
+ */
+
+// Variables to store points and the resulting convex hull
+let points = [];
+let hull = [];
+
+// Variables for algorithm execution
+let leftMost;
+let currentVertex;
+let index;
+let nextIndex = -1;
+let nextVertex;
+let drawEnabled = false;
+
+
+/**
+ * Sets up the canvas and initializes event listeners for user interaction.
+ */
+function setup() {
+    // Canvas setup
+    let canvas = createCanvas(1000, 600);
+    canvas.parent('canvas-container');
+    background(0);
+
+    // Event listeners
+    canvas.mouseClicked(addPoint);
+    canvas.mouseOver(activateCursor);
+    canvas.mouseOut(deactivateCursor);
+
+    // Button setup
+    let randomBtn = select('#randomBtn');
+    randomBtn.mousePressed(addRandomPoints);
+
+    let clearBtn = select('#clearBtn');
+    clearBtn.mousePressed(clearPoints);
+
+    let runBtn = select('#runBtn');
+    runBtn.mousePressed(runAlgorithm);
+
+    let showHullBtn = select('#showHullBtn');
+    showHullBtn.mousePressed(showConvexHull);
+
+    // Prevent draw loop until algorithm is executed
+    noLoop();
+}
+
+/**
+ * Draws the canvas and executes the gift wrapping algorithm when enabled.
+ */
+function draw() {
+    if(drawEnabled){
+        background(0);
+        stroke(255);
+        strokeWeight(8);
+        for (let p of points) {
+            point(p.x, p.y);
+        }
+
+        stroke(0, 0, 255);
+        strokeWeight(4);
+        fill(0, 0, 255, 50);
+        // noFill(); 
+        beginShape();
+        for (let p of hull) {
+            vertex(p.x, p.y);
+        }
+        endShape(CLOSE);
+
+        stroke(0, 255, 0);
+        strokeWeight(10);
+        point(leftMost.x, leftMost.y);
+
+        stroke(200, 0, 255);
+        strokeWeight(10);
+        point(currentVertex.x, currentVertex.y);
+
+        stroke(0, 255, 0);
+        strokeWeight(2);
+        line(currentVertex.x, currentVertex.y, nextVertex.x, nextVertex.y);
+
+        let checking = points[index];
+        stroke(255);
+        strokeWeight(2);
+        line(currentVertex.x, currentVertex.y, checking.x, checking.y);
+
+        const a = p5.Vector.sub(nextVertex, currentVertex);
+        const b = p5.Vector.sub(checking, currentVertex);
+        const cross = a.cross(b);
+
+        if (cross.z &lt; 0) {
+            nextVertex = checking;
+            nextIndex = index;
+        }
+
+        index = index + 1;
+        pointsInHull();
+        if (index == points.length) {
+            if (nextVertex == leftMost) {
+                background(0);
+                stroke(255);
+                strokeWeight(8);
+                for (let p of points) {
+                    point(p.x, p.y);
+                }
+
+                stroke(0, 0, 255);
+                strokeWeight(4);
+                fill(0, 0, 255, 50);
+                beginShape();
+                for (let p of hull) {
+                    vertex(p.x, p.y);
+                }
+                endShape(CLOSE);
+                console.log('done');
+                drawEnabled = false;
+                noLoop();
+            } else {
+                hull.push(nextVertex);
+                pointsInHull();
+                currentVertex = nextVertex;
+                index = 0;
+                nextVertex = leftMost;
+            }
+        }
+    }
+}
+
+/**
+ * Adds a specified number of random points to the canvas.
+ */
+function addRandomPoints() {
+    let randomNumber = select('#randomNumber').value();
+    
+    for (let i = 0; i &lt; randomNumber; i++) {
+        let x = random(20, width - 20);
+        let y = random(20, height - 20);
+        points.push(createVector(x, y));
+        stroke(255);
+        fill(255);
+        ellipse(x, y, 8, 8);
+    }
+    updatePointCount();
+}
+
+/**
+ * Clears all points and the resulting convex hull from the canvas.
+ */
+function clearPoints() {
+    points = [];
+    hull = [];
+    background(0);
+    updatePointCount();
+    pointsInHull();
+}
+
+/**
+ * Updates the count of points in the convex hull.
+ */
+function pointsInHull(){
+    select('#hullCount').html(`${hull.length}`);
+}
+
+/**
+ * Updates the displayed count of points.
+ */
+function updatePointCount() {
+    select('#pointCount').html(`${points.length}`);
+}
+
+/**
+ * Runs the gift wrapping algorithm to find the convex hull of the points.
+ */
+function runAlgorithm() {
+    console.log("Running algorithm\nPoints size:", points.length);
+
+    if(points.length &lt; 3){
+        console.log("Convex hull cannot be implemented for less than 3 points");
+        select('#warning').html("Convex hull cannot be implemented for less than 3 points");
+        return;
+    }
+    select('#warning').html("");
+    points.sort((a, b) => a.x - b.x);
+    leftMost = points[0];
+    currentVertex = leftMost;
+    hull.push(currentVertex);
+    nextVertex = points[1];
+    index = 2;
+    let speed = select('#speedSlider').value();
+    frameRate(speed);
+    drawEnabled = true;
+    loop();     
+}
+
+// Function to handle file upload
+document.getElementById('fileInput').addEventListener('change', handleFileSelect, false);
+/**
+ * Handles file upload and processes the CSV data to add points.
+ * @param {Event} event - The file upload event.
+ */
+function handleFileSelect(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const contents = e.target.result;
+        processData(contents);
+    };
+    reader.readAsText(file);
+}
+
+// Function to process CSV data
+/**
+ * Processes the CSV data to add points to the canvas.
+ * @param {string} csv - The CSV data.
+ */
+function processData(csv) {
+    const lines = csv.split('\n');
+    for (let i = 0; i &lt; lines.length; i++) {
+        const parts = lines[i].trim().split(',');
+        if (parts.length === 2) {
+            const x = parseFloat(parts[0]);
+            const y = parseFloat(parts[1]);
+            points.push(createVector(x, y));
+            stroke(255);
+            fill(255);
+            ellipse(x, y, 8, 8);
+        }
+    }
+    updatePointCount();
+}
+
+/**
+ * Displays the convex hull calculated using Jarvis March algorithm.
+ */
+function showConvexHull(){
+    hull = jarvisMarch(points);
+    stroke(0, 0, 255);
+    strokeWeight(4);
+    fill(0, 0, 255, 50);
+    beginShape();
+    for (let p of hull) {
+        vertex(p.x, p.y);
+    }
+    endShape(CLOSE);
+}
+
+/**
+ * Adds a point to the canvas at the mouse position.
+ */
+function addPoint() {
+    let x = mouseX;
+    let y = mouseY;
+    points.push(createVector(x, y));
+    stroke(255);
+    strokeWeight(4);
+    fill(255);
+    ellipse(x, y, 8, 8);
+    updatePointCount();
+}
+
+/**
+ * Activates the cursor style to crosshair when mouse is over the canvas.
+ */
+function activateCursor() {
+    cursor('crosshair');
+}
+
+/**
+ * Deactivates the cursor style when mouse is out of the canvas.
+ */
+function deactivateCursor() {
+    cursor();
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a> on Thu Apr 04 2024 23:51:51 GMT+0530 (India Standard Time) using the Minami theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>
